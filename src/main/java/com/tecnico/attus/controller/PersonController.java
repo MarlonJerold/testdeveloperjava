@@ -1,14 +1,17 @@
 package com.tecnico.attus.controller;
 
-import com.tecnico.attus.model.Adresses;
 import com.tecnico.attus.model.Person;
-import com.tecnico.attus.services.AddressService;
 import com.tecnico.attus.services.PersonService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RestController
+@RequestMapping("/person")
+@Api(value = "API Person", description = "Teste técnico Java")
 public class PersonController {
 
     @Autowired
@@ -29,6 +32,7 @@ public class PersonController {
         return personService.getPersonById(id);
     }
 
+    @ApiOperation(value = "Exemplo de endpoint", response = String.class)
     @GetMapping
     public List<Person> getAllPersons() {
         return personService.getAllPersons();
