@@ -1,11 +1,8 @@
 package com.tecnico.attus.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
-import java.util.Date;
+import java.util.*;
 
 @Entity(name = "person")
 public class Person {
@@ -15,6 +12,14 @@ public class Person {
     private Integer id;
     private String fullName;
     private Date birthDate;
+
+    @ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+            name = "person_address",
+            joinColumns = { @JoinColumn(name = "person_id") },
+            inverseJoinColumns = { @JoinColumn(name = "address_id") }
+    )
+    private Set<Adresses> addresses = new HashSet<>();
 
     public Integer getId() {
         return id;
@@ -26,6 +31,10 @@ public class Person {
 
     public Date getBirthDate() {
         return birthDate;
+    }
+
+    public Set<Adresses> getAddresses() {
+        return addresses;
     }
 
     public static class Builder {
@@ -47,6 +56,11 @@ public class Person {
 
         public Builder birthDate(Date birthDate) {
             person.birthDate = birthDate;
+            return this;
+        }
+
+        public Builder addresses(Set<Adresses> addresses) {
+            person.addresses = addresses;
             return this;
         }
 

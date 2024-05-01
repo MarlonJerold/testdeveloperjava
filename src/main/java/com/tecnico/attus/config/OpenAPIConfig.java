@@ -15,4 +15,5 @@ public class OpenAPIConfig {
                         .description("Teste tecnico backend")
                         .version("1.0"));
     }
+
 }

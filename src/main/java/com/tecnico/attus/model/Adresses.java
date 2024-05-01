@@ -1,9 +1,9 @@
 package com.tecnico.attus.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity(name = "adresses")
 public class Adresses {
@@ -16,6 +16,9 @@ public class Adresses {
     private Integer number;
     private String city;
     private String state;
+
+    @ManyToMany(mappedBy = "addresses")
+    private Set<Person> persons = new HashSet<>();
 
     Adresses() {}
 
