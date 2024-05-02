@@ -1,10 +1,10 @@
 package com.tecnico.attus.controller;
 
 import com.tecnico.attus.model.Person;
+import com.tecnico.attus.model.dto.PersonAddressDTO;
 import com.tecnico.attus.model.dto.PersonDTO;
 import com.tecnico.attus.services.PersonService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -23,12 +23,18 @@ public class PersonController {
     private PersonService personService;
 
     @PostMapping
-    public PersonDTO createPerson(@RequestBody PersonDTO requestDTO) throws ParseException {
+    public PersonAddressDTO createPerson(@RequestBody PersonAddressDTO requestDTO) throws ParseException {
         return personService.createPerson(requestDTO);
     }
 
+    @Operation(
+            summary = "Atualizar pessoa",
+            description = "Consult a list of people, along with all their associated addresses")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successful operation")
+    })
     @PutMapping("/{id}")
-    public Person updatePerson(@PathVariable Integer id, @RequestBody Person person) {
+    public Person updatePerson(@PathVariable Integer id, @RequestBody PersonDTO person) throws ParseException {
         return personService.updatePerson(id, person);
     }
 
@@ -44,7 +50,7 @@ public class PersonController {
             @ApiResponse(responseCode = "200", description = "successful operation")
     })
     @GetMapping
-    public List<PersonDTO> getAllPersons() {
+    public List<PersonAddressDTO> getAllPersons() {
         return personService.getAllPersons();
     }
 }

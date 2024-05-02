@@ -3,17 +3,20 @@ package com.tecnico.attus.services.impl;
 import com.tecnico.attus.model.Adresses;
 import com.tecnico.attus.model.Person;
 import com.tecnico.attus.model.dto.AddressDTO;
+import com.tecnico.attus.model.dto.PersonAddressDTO;
 import com.tecnico.attus.model.dto.PersonDTO;
 import com.tecnico.attus.repository.AddressRepository;
 import com.tecnico.attus.repository.PersonRepository;
 import com.tecnico.attus.services.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,7 +28,7 @@ public class PersonServiceImpl implements PersonService {
     private AddressRepository addressRepository;
 
     @Override
-    public PersonDTO createPerson(PersonDTO personRequestDto) throws ParseException {
+    public PersonAddressDTO createPerson(PersonAddressDTO personRequestDto) throws ParseException {
 
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         Date dataFormatada = formato.parse(personRequestDto.birthDate());
@@ -56,14 +59,21 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public Person updatePerson(Integer id, Person person) {
-        Person personRequest = Person.builder()
-                .id(person.getId())
-                .fullName(person.getFullName())
-                .birthDate(person.getBirthDate())
-                .build();
+    public Person updatePerson(Integer id, PersonDTO person) throws ParseException {
 
-        return null;
+        Optional<Person> optionalPerson = personRepository.findById(id);
+        if (optionalPerson.isEmpty()) {
+            throw new NotFoundException("Pessoa não encontrada com o ID: " + id);
+        }
+
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+        Date dataFormatada = formato.parse(person.birthDate());
+
+        Person existingPerson = optionalPerson.get();
+        existingPerson.setFullName(person.fullName());
+        existingPerson.setBirthDate(dataFormatada);
+
+        return personRepository.save(existingPerson);
     }
 
     @Override
@@ -72,18 +82,18 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public List<PersonDTO> getAllPersons() {
+    public List<PersonAddressDTO> getAllPersons() {
         List<Person> personList = personRepository.findAll();
         return mapToDTOList(personList);
     }
 
-    public List<PersonDTO> mapToDTOList(List<Person> personList) {
+    public List<PersonAddressDTO> mapToDTOList(List<Person> personList) {
         return personList.stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
 
-    public PersonDTO mapToDTO(Person person) {
+    public PersonAddressDTO mapToDTO(Person person) {
 
         List<AddressDTO> addressDTOs = person.getAddresses().stream()
                 .map(address -> new AddressDTO(
@@ -95,7 +105,7 @@ public class PersonServiceImpl implements PersonService {
                         address.state()))
                 .collect(Collectors.toList());
 
-        return new PersonDTO(
+        return new PersonAddressDTO(
                 person.getId(),
                 person.getFullName(),
                 person.getBirthDate().toString(),

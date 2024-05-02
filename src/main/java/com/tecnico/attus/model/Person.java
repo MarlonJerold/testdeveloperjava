@@ -6,7 +6,6 @@ import java.util.*;
 
 @Entity(name = "person")
 public class Person {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -15,6 +14,18 @@ public class Person {
 
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
     private Set<Adresses> addresses = new HashSet<>();
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
 
     public Integer getId() {
         return id;
