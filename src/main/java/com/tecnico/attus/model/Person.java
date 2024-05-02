@@ -13,12 +13,7 @@ public class Person {
     private String fullName;
     private Date birthDate;
 
-    @ManyToMany(cascade = { CascadeType.ALL })
-    @JoinTable(
-            name = "person_address",
-            joinColumns = { @JoinColumn(name = "person_id") },
-            inverseJoinColumns = { @JoinColumn(name = "address_id") }
-    )
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
     private Set<Adresses> addresses = new HashSet<>();
 
     public Integer getId() {

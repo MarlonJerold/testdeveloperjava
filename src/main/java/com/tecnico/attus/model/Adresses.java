@@ -5,8 +5,10 @@ import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity(name = "adresses")
+@Entity(name = "adresses") // Corrigido o nome da entidade para "addresses"
 public class Adresses {
+
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,49 +19,93 @@ public class Adresses {
     private String city;
     private String state;
 
-    @ManyToMany(mappedBy = "addresses")
-    private Set<Person> persons = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "person_id")
+    private Person person;
 
-    Adresses() {}
+    protected Adresses() {}
+
+    public Adresses(String streetAddress, String zipCode, Integer number, String city, String state, Person person) {
+        this.streetAddress = streetAddress;
+        this.zipCode = zipCode;
+        this.number = number;
+        this.city = city;
+        this.state = state;
+        this.person = person;
+    }
+
+
+    public Integer id() {
+        return id;
+    }
+
+    public String streetAddress() {
+        return streetAddress;
+    }
+
+    public String zipCode() {
+        return zipCode;
+    }
+
+    public Integer number() {
+        return number;
+    }
+
+    public String city() {
+        return city;
+    }
+
+    public String state() {
+        return state;
+    }
+
+
+    public static Builder builder() {
+        return new Builder();
+    }
 
     public static class Builder {
 
-        private Adresses adresses;
-
-        private Builder() {
-            adresses = new Adresses();
-        }
+        private String streetAddress;
+        private String zipCode;
+        private Integer number;
+        private String city;
+        private String state;
+        private Person person;
 
         public Builder streetAddress(String streetAddress) {
-            adresses.streetAddress = streetAddress;
+            this.streetAddress = streetAddress;
             return this;
         }
 
         public Builder zipCode(String zipCode) {
-            adresses.zipCode = zipCode;
+            this.zipCode = zipCode;
             return this;
         }
 
         public Builder number(Integer number) {
-            adresses.number = number;
+            this.number = number;
             return this;
         }
 
         public Builder city(String city) {
-            adresses.city = city;
+            this.city = city;
             return this;
         }
 
         public Builder state(String state) {
-            adresses.state = state;
+            this.state = state;
+            return this;
+        }
+
+        public Builder person(Person person) {
+            this.person = person;
             return this;
         }
 
         public Adresses build() {
-            return adresses;
+            return new Adresses(streetAddress, zipCode, number, city, state, person);
         }
-
     }
-
 }
 

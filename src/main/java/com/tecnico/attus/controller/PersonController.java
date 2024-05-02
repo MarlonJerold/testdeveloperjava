@@ -1,12 +1,17 @@
 package com.tecnico.attus.controller;
 
 import com.tecnico.attus.model.Person;
+import com.tecnico.attus.model.dto.PersonDTO;
 import com.tecnico.attus.services.PersonService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.util.List;
 
 @RestController
@@ -18,8 +23,8 @@ public class PersonController {
     private PersonService personService;
 
     @PostMapping
-    public Person createPerson(@RequestBody Person person) {
-        return personService.createPerson(person);
+    public PersonDTO createPerson(@RequestBody PersonDTO requestDTO) throws ParseException {
+        return personService.createPerson(requestDTO);
     }
 
     @PutMapping("/{id}")
@@ -32,10 +37,14 @@ public class PersonController {
         return personService.getPersonById(id);
     }
 
-    @ApiOperation(value = "Exemplo de endpoint", response = String.class)
+    @Operation(
+            summary = "Consult all Persons",
+            description = "Consult a list of people, along with all their associated addresses")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successful operation")
+    })
     @GetMapping
-    public List<Person> getAllPersons() {
+    public List<PersonDTO> getAllPersons() {
         return personService.getAllPersons();
     }
-
 }
