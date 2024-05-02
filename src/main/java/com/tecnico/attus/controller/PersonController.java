@@ -6,9 +6,8 @@ import com.tecnico.attus.model.dto.PersonDTO;
 import com.tecnico.attus.services.PersonService;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -23,34 +22,26 @@ public class PersonController {
     private PersonService personService;
 
     @PostMapping
-    public PersonAddressDTO createPerson(@RequestBody PersonAddressDTO requestDTO) throws ParseException {
-        return personService.createPerson(requestDTO);
+    public ResponseEntity<PersonAddressDTO> createPerson(@RequestBody PersonAddressDTO requestDTO) throws ParseException {
+        return ResponseEntity.ok(personService.createPerson(requestDTO));
     }
 
-    @Operation(
-            summary = "Atualizar pessoa",
-            description = "Consult a list of people, along with all their associated addresses")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "successful operation")
-    })
+    @Operation(summary = "Atualizar pessoa", description = "Atualiza pessoa passando o ID da pessoa como parâmetro")
     @PutMapping("/{id}")
-    public Person updatePerson(@PathVariable Integer id, @RequestBody PersonDTO person) throws ParseException {
-        return personService.updatePerson(id, person);
+    public ResponseEntity<Person> updatePerson(@PathVariable Integer id, @RequestBody PersonDTO person) throws ParseException {
+        return ResponseEntity.ok(personService.updatePerson(id, person));
     }
 
+    @Operation(summary = "Consultar pessoa por ID", description = "Consulta por ID, será realizado a busca com base no id passado nos parâmetros")
     @GetMapping("/{id}")
-    public Person getPersonById(@PathVariable Long id) {
-        return personService.getPersonById(id);
+    public ResponseEntity<Person> getPersonById(@PathVariable Integer id) {
+        return ResponseEntity.ok(personService.getPersonById(id));
     }
 
-    @Operation(
-            summary = "Consult all Persons",
-            description = "Consult a list of people, along with all their associated addresses")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "successful operation")
-    })
+    @Operation(summary = "Consulta pessoa", description = "Realiza a listagem de todas as pessoas, juntamente com seus endereços")
     @GetMapping
-    public List<PersonAddressDTO> getAllPersons() {
-        return personService.getAllPersons();
+    public ResponseEntity<List<PersonAddressDTO>> getAllPersons() {
+        return ResponseEntity.ok(personService.getAllPersons());
     }
+
 }

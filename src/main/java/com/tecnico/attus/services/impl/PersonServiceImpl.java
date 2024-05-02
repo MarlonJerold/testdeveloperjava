@@ -72,13 +72,13 @@ public class PersonServiceImpl implements PersonService {
         Person existingPerson = optionalPerson.get();
         existingPerson.setFullName(person.fullName());
         existingPerson.setBirthDate(dataFormatada);
-
         return personRepository.save(existingPerson);
     }
 
     @Override
-    public Person getPersonById(Long id) {
-        return null;
+    public Person getPersonById(Integer id) {
+        Optional<Person> personById = personRepository.findById(id);
+        return personById.orElse(null);
     }
 
     @Override

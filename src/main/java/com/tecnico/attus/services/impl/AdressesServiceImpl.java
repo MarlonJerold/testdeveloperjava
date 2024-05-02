@@ -1,6 +1,7 @@
 package com.tecnico.attus.services.impl;
 
 import com.tecnico.attus.model.Adresses;
+import com.tecnico.attus.model.dto.AddressDTO;
 import com.tecnico.attus.repository.AddressRepository;
 import com.tecnico.attus.services.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,17 +16,17 @@ public class AdressesServiceImpl implements AddressService {
     private AddressRepository addressRepository;
 
     @Override
-    public Adresses createAddressForPerson(Long personId, Adresses address) {
+    public Adresses createAddressForPerson(Integer personId, AddressDTO address) {
         return null;
     }
 
     @Override
-    public Adresses updateAddressForPerson(Long personId, Adresses address) {
+    public Adresses updateAddressForPerson(Integer personId, AddressDTO address) {
         return null;
     }
 
     @Override
-    public List<Adresses> getAddressesForPerson(Long personId) {
+    public List<Adresses> getAddressesForPerson(Integer personId) {
         return List.of();
     }
 
