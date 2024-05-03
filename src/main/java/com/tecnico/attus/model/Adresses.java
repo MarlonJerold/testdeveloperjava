@@ -2,18 +2,18 @@ package com.tecnico.attus.model;
 
 import jakarta.persistence.*;
 
-import java.util.HashSet;
-import java.util.Set;
 
-@Entity(name = "adresses") // Corrigido o nome da entidade para "addresses"
+@Entity(name = "adresses")
 public class Adresses {
-
 
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String streetAddress;
+
+
+
     private String zipCode;
     private Integer number;
     private String city;
@@ -34,9 +34,13 @@ public class Adresses {
         this.person = person;
     }
 
-
     public Integer id() {
         return id;
+    }
+
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String streetAddress() {
@@ -59,6 +63,33 @@ public class Adresses {
         return state;
     }
 
+    public Person person() {
+        return person;
+    }
+
+    public void setStreetAddress(String streetAddress) {
+        this.streetAddress = streetAddress;
+    }
+
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
+    }
+
+    public void setNumber(Integer number) {
+        this.number = number;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
 
     public static Builder builder() {
         return new Builder();
@@ -107,5 +138,6 @@ public class Adresses {
             return new Adresses(streetAddress, zipCode, number, city, state, person);
         }
     }
+
 }
 

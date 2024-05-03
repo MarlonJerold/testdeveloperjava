@@ -22,10 +22,16 @@ import java.util.stream.Collectors;
 @Service
 public class PersonServiceImpl implements PersonService {
 
+    private final PersonRepository personRepository;
+
+    private final AddressRepository addressRepository;
+
     @Autowired
-    private PersonRepository personRepository;
-    @Autowired
-    private AddressRepository addressRepository;
+    public PersonServiceImpl(PersonRepository personRepository, AddressRepository addressRepository) {
+        this.personRepository = personRepository;
+        this.addressRepository = addressRepository;
+    }
+
 
     @Override
     public PersonAddressDTO createPerson(PersonAddressDTO personRequestDto) throws ParseException {
@@ -62,6 +68,7 @@ public class PersonServiceImpl implements PersonService {
     public Person updatePerson(Integer id, PersonDTO person) throws ParseException {
 
         Optional<Person> optionalPerson = personRepository.findById(id);
+
         if (optionalPerson.isEmpty()) {
             throw new NotFoundException("Pessoa não encontrada com o ID: " + id);
         }
