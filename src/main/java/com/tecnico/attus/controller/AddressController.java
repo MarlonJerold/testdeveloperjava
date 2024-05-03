@@ -25,23 +25,18 @@ public class AddressController {
     }
 
     @PostMapping("/{personId}")
-    public ResponseEntity<Adresses> createAddressForPerson(@PathVariable Integer personId, @RequestBody AddressRequestDTO addressDTO) {
+    public ResponseEntity<AddressDTO> createAddressForPerson(@PathVariable Integer personId, @RequestBody AddressRequestDTO addressDTO) {
         return ResponseEntity.ok(addressService.createAddressForPerson(personId, addressDTO));
     }
 
     @PutMapping("/persons/{personId}/addresses/{addressId}")
-    public ResponseEntity<Adresses> updateAddressForPerson(@PathVariable Integer personId, @PathVariable Integer addressId, @RequestBody AddressRequestDTO addressDTO) {
+    public ResponseEntity<AddressDTO> updateAddressForPerson(@PathVariable Integer personId, @PathVariable Integer addressId, @RequestBody AddressRequestDTO addressDTO) {
         return ResponseEntity.ok(addressService.updateAddressForPerson(personId, addressId, addressDTO));
     }
 
     @PutMapping("addressForPerson/{personId}/addresses/{addressId}")
     public void setPrimaryAddressForPerson(@PathVariable Integer personId, @PathVariable Integer addressId) {
         addressService.setPrimaryAddressForPerson(personId, addressId);
-    }
-
-    @GetMapping("addressForPerson/{id}")
-    public ResponseEntity<Adresses> getPrimaryAddressForPerson(@PathVariable Integer personId) {
-        return ResponseEntity.ok(addressService.getPrimaryAddressForPerson(personId));
     }
 
 }

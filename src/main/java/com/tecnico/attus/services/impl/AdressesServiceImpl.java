@@ -10,9 +10,7 @@ import com.tecnico.attus.services.AddressService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.webjars.NotFoundException;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -28,7 +26,7 @@ public class AdressesServiceImpl implements AddressService {
     }
 
     @Override
-    public Adresses createAddressForPerson(Integer personId, AddressRequestDTO address) {
+    public AddressDTO createAddressForPerson(Integer personId, AddressRequestDTO address) {
 
         Optional<Person> person = personRepository.findById(personId);
         Adresses adresses = Adresses.builder()
@@ -41,11 +39,12 @@ public class AdressesServiceImpl implements AddressService {
                 .build();
 
         Adresses adressesSave = addressRepository.save(adresses);
-        return adressesSave;
+
+        return mapAddressToDTO(adressesSave);
     }
 
     @Override
-    public Adresses updateAddressForPerson(Integer personId, Integer addressId, AddressRequestDTO address) {
+    public AddressDTO updateAddressForPerson(Integer personId, Integer addressId, AddressRequestDTO address) {
 
         Person person = personRepository.findById(personId)
                 .orElseThrow(() -> new EntityNotFoundException("Pessoa não encontrada"));
@@ -63,8 +62,9 @@ public class AdressesServiceImpl implements AddressService {
         adresses.setZipCode(address.zipCode());
         adresses.setState(address.state());
 
-        return addressRepository.save(adresses);
+        Adresses adressesSave = addressRepository.save(adresses);
 
+        return mapAddressToDTO(adressesSave);
     }
 
     @Override
@@ -81,22 +81,39 @@ public class AdressesServiceImpl implements AddressService {
         return addressDTOListDTOs;
     }
 
-    @Override
-    public Adresses getPrimaryAddressForPerson(Integer personId) {
-        return null;
-    }
+
 
     @Override
     public void setPrimaryAddressForPerson(Integer personId, Integer addressId) {
+        Person person = personRepository.findById(personId)
+                .orElseThrow(() -> new EntityNotFoundException("Person not found"));
 
-        Person person = personRepository.findById(personId).orElseThrow(() -> new RuntimeException("Person not found"));
-        Adresses address = person.getAddresses().stream().filter(a -> a.id().equals(addressId)).findFirst().orElseThrow(() -> new RuntimeException("Address not found"));
+        Adresses address = person.getAddresses().stream()
+                .filter(a -> a.id().equals(addressId))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException("Address not found"));
 
-        person.getAddresses().forEach(a -> a.setMain(a.id().equals(addressId)));
-        address.setMain(true);
-
+        setMainAddressForPerson(person, address);
         personRepository.save(person);
 
+    }
+
+    private void setMainAddressForPerson(Person person, Adresses address) {
+        person.getAddresses().forEach(a -> a.setMain(a.id().equals(address.id())));
+        address.setMain(true);
+    }
+
+
+    private AddressDTO mapAddressToDTO(Adresses adresses) {
+        return new AddressDTO(
+                adresses.id(),
+                adresses.streetAddress(),
+                adresses.zipCode(),
+                adresses.number(),
+                adresses.city(),
+                adresses.state(),
+                adresses.isMain()
+        );
     }
 
 }
