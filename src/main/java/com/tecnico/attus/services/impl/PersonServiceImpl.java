@@ -21,15 +21,12 @@ import java.util.stream.Collectors;
 @Service
 public class PersonServiceImpl implements PersonService {
 
-    private final PersonRepository personRepository;
-
-    private final AddressRepository addressRepository;
+    @Autowired
+    private PersonRepository personRepository;
 
     @Autowired
-    public PersonServiceImpl(PersonRepository personRepository, AddressRepository addressRepository) {
-        this.personRepository = personRepository;
-        this.addressRepository = addressRepository;
-    }
+    private AddressRepository addressRepository;
+
 
 
     @Override
