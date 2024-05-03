@@ -8,10 +8,9 @@ import java.util.List;
 
 public interface AddressService {
 
-    Adresses createAddressForPerson(Integer personId, AddressRequestDTO address);
-    Adresses updateAddressForPerson(Integer personId, Integer addressId, AddressRequestDTO address);
+    AddressDTO createAddressForPerson(Integer personId, AddressRequestDTO address);
+    AddressDTO updateAddressForPerson(Integer personId, Integer addressId, AddressRequestDTO address);
     List<AddressDTO> getAddressesForPerson(Integer personId);
-    Adresses getPrimaryAddressForPerson(Integer personId);
     void setPrimaryAddressForPerson(Integer personId, Integer addressId);
 
 }

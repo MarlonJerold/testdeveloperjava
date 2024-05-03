@@ -14,9 +14,8 @@ import org.webjars.NotFoundException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -74,7 +73,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public Person updatePerson(Integer id, PersonDTO person) throws ParseException {
+    public PersonAddressDTO updatePerson(Integer id, PersonDTO person) throws ParseException {
 
         Optional<Person> optionalPerson = personRepository.findById(id);
 
@@ -88,7 +87,8 @@ public class PersonServiceImpl implements PersonService {
         Person existingPerson = optionalPerson.get();
         existingPerson.setFullName(person.fullName());
         existingPerson.setBirthDate(dataFormatada);
-        return personRepository.save(existingPerson);
+
+        return mapToDTO(personRepository.save(existingPerson));
     }
 
     @Override
@@ -103,6 +103,38 @@ public class PersonServiceImpl implements PersonService {
         return mapToDTOList(personList);
     }
 
+    @Override
+    public List<PersonAddressDTO> getPeopleWithMainAddress() {
+        List<Person> personList = personRepository.findAll();
+
+        List<PersonAddressDTO> dtoList = personList.stream()
+                .map(person -> {
+                    Adresses mainAddress = person.getAddresses().stream()
+                            .filter(Adresses::isMain)
+                            .findFirst()
+                            .orElse(null);
+
+                    if (mainAddress != null) {
+                        LocalDateTime birthDate = LocalDateTime.parse(person.getBirthDate().toString());
+                        AddressDTO addressDTO = new AddressDTO(
+                                mainAddress.id(),
+                                mainAddress.streetAddress(),
+                                mainAddress.zipCode(),
+                                mainAddress.number(),
+                                mainAddress.city(),
+                                mainAddress.state(),
+                                mainAddress.isMain()
+                        );
+                        return new PersonAddressDTO(person.getId(), person.getFullName(), birthDate.toString(), Collections.singletonList(addressDTO)
+                        );
+                    } else {
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        return dtoList;
+    }
     public List<PersonAddressDTO> mapToDTOList(List<Person> personList) {
         return personList.stream()
                 .map(this::mapToDTO)
@@ -110,24 +142,11 @@ public class PersonServiceImpl implements PersonService {
     }
 
     public PersonAddressDTO mapToDTO(Person person) {
-
         List<AddressDTO> addressDTOs = person.getAddresses().stream()
-                .map(address -> new AddressDTO(
-                        address.id(),
-                        address.streetAddress(),
-                        address.zipCode(),
-                        address.number(),
-                        address.city(),
-                        address.state(),
-                        address.isMain()
+                .map(address -> new AddressDTO(address.id(), address.streetAddress(), address.zipCode(), address.number(), address.city(), address.state(), address.isMain()
                 ))
                 .collect(Collectors.toList());
-
-        return new PersonAddressDTO(
-                person.getId(),
-                person.getFullName(),
-                person.getBirthDate().toString(),
-                addressDTOs
+        return new PersonAddressDTO(person.getId(), person.getFullName(), person.getBirthDate().toString(), addressDTOs
         );
     }
 

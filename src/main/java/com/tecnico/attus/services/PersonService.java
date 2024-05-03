@@ -10,8 +10,8 @@ import java.util.List;
 public interface PersonService {
 
     PersonAddressDTO createPerson(PersonAddressDTO PersonWithAddressesRequest) throws ParseException;
-    Person updatePerson(Integer id, PersonDTO person) throws ParseException;
+    PersonAddressDTO updatePerson(Integer id, PersonDTO person) throws ParseException;
     Person getPersonById(Integer id);
     List<PersonAddressDTO> getAllPersons();
-
+    List<PersonAddressDTO> getPeopleWithMainAddress();
 }

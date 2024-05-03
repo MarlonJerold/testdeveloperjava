@@ -26,9 +26,14 @@ public class PersonController {
         return ResponseEntity.ok(personService.createPerson(requestDTO));
     }
 
+    @GetMapping("getPeopleWithMainAddress")
+    public ResponseEntity<List<PersonAddressDTO>> getPeopleWithMainAddress() {
+        return ResponseEntity.ok(personService.getPeopleWithMainAddress());
+    }
+
     @Operation(summary = "Atualizar pessoa", description = "Atualiza pessoa passando o ID da pessoa como parâmetro")
     @PutMapping("/{id}")
-    public ResponseEntity<Person> updatePerson(@PathVariable Integer id, @RequestBody PersonDTO person) throws ParseException {
+    public ResponseEntity<PersonAddressDTO> updatePerson(@PathVariable Integer id, @RequestBody PersonDTO person) throws ParseException {
         return ResponseEntity.ok(personService.updatePerson(id, person));
     }
 

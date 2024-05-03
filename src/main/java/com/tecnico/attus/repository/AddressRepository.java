@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface AddressRepository extends JpaRepository<Adresses, Integer> {
     List<Adresses> findByPersonId(Integer personId);
+
 }
