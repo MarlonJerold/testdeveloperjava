@@ -34,9 +34,9 @@ public class AddressController {
         return ResponseEntity.ok(addressService.updateAddressForPerson(personId, addressId, addressDTO));
     }
 
-    @PutMapping("addressForPerson/{id}")
-    public void setPrimaryAddressForPerson(@PathVariable Integer addressId) {
-        addressService.setPrimaryAddressForPerson(addressId);
+    @PutMapping("addressForPerson/{personId}/addresses/{addressId}")
+    public void setPrimaryAddressForPerson(@PathVariable Integer personId, @PathVariable Integer addressId) {
+        addressService.setPrimaryAddressForPerson(personId, addressId);
     }
 
     @GetMapping("addressForPerson/{id}")

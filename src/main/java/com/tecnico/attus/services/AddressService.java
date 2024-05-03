@@ -12,6 +12,6 @@ public interface AddressService {
     Adresses updateAddressForPerson(Integer personId, Integer addressId, AddressRequestDTO address);
     List<AddressDTO> getAddressesForPerson(Integer personId);
     Adresses getPrimaryAddressForPerson(Integer personId);
-    void setPrimaryAddressForPerson(Integer addressId);
+    void setPrimaryAddressForPerson(Integer personId, Integer addressId);
 
 }

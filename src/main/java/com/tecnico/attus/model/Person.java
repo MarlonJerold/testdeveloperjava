@@ -15,6 +15,14 @@ public class Person {
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
     private Set<Adresses> addresses = new HashSet<>();
 
+    @Transient
+    public Adresses getMainAddress() {
+        return addresses.stream()
+                .filter(Adresses::isMain)
+                .findFirst()
+                .orElse(null);
+    }
+
     public void setId(Integer id) {
         this.id = id;
     }

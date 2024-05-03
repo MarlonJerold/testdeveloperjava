@@ -11,13 +11,13 @@ public class Adresses {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String streetAddress;
-
-
-
     private String zipCode;
     private Integer number;
     private String city;
     private String state;
+
+    @Column(name = "is_main", nullable = false, columnDefinition = "boolean default false")
+    private boolean isMain;
 
     @ManyToOne
     @JoinColumn(name = "person_id")
@@ -25,13 +25,14 @@ public class Adresses {
 
     protected Adresses() {}
 
-    public Adresses(String streetAddress, String zipCode, Integer number, String city, String state, Person person) {
+    public Adresses(String streetAddress, String zipCode, Integer number, String city, String state, Person person, boolean isMain) {
         this.streetAddress = streetAddress;
         this.zipCode = zipCode;
         this.number = number;
         this.city = city;
         this.state = state;
         this.person = person;
+        this.isMain = isMain;
     }
 
     public Integer id() {
@@ -63,6 +64,9 @@ public class Adresses {
         return state;
     }
 
+    public boolean isMain() {
+        return isMain;
+    }
     public Person person() {
         return person;
     }
@@ -91,6 +95,11 @@ public class Adresses {
         this.person = person;
     }
 
+
+    public void setMain(boolean main) {
+        isMain = main;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -102,6 +111,7 @@ public class Adresses {
         private Integer number;
         private String city;
         private String state;
+        private boolean isMain;
         private Person person;
 
         public Builder streetAddress(String streetAddress) {
@@ -134,8 +144,13 @@ public class Adresses {
             return this;
         }
 
+        public Builder isMain(boolean isMain) {
+            this.isMain = isMain;
+            return this;
+        }
+
         public Adresses build() {
-            return new Adresses(streetAddress, zipCode, number, city, state, person);
+            return new Adresses(streetAddress, zipCode, number, city, state, person, isMain);
         }
     }
 

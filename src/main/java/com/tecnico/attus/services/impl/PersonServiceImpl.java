@@ -44,6 +44,14 @@ public class PersonServiceImpl implements PersonService {
                 .birthDate(dataFormatada)
                 .build();
 
+        List<AddressDTO> addressDtos = personRequestDto.addresses();
+
+        long mainAddressCount = addressDtos.stream().filter(AddressDTO::isMain).count();
+
+        if (mainAddressCount > 1) {
+            throw new RuntimeException("More than one address is marked as main");
+        }
+
         List<Adresses> addresses = personRequestDto.addresses().stream()
                 .map(addressDto -> new Adresses(
                         addressDto.streetAddress(),
@@ -51,7 +59,8 @@ public class PersonServiceImpl implements PersonService {
                         addressDto.number(),
                         addressDto.city(),
                         addressDto.state(),
-                        person
+                        person,
+                        addressDto.isMain()
                 ))
                 .collect(Collectors.toList());
 
@@ -109,7 +118,9 @@ public class PersonServiceImpl implements PersonService {
                         address.zipCode(),
                         address.number(),
                         address.city(),
-                        address.state()))
+                        address.state(),
+                        address.isMain()
+                ))
                 .collect(Collectors.toList());
 
         return new PersonAddressDTO(

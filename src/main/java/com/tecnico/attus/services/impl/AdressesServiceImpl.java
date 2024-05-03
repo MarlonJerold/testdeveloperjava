@@ -74,7 +74,7 @@ public class AdressesServiceImpl implements AddressService {
         List<AddressDTO> addressDTOListDTOs = new ArrayList<>();
 
         for (Adresses adresses : adressesList) {
-            AddressDTO addressDTO = new AddressDTO(adresses.id(), adresses.streetAddress(), adresses.zipCode(), adresses.number(), adresses.city(), adresses.state());
+            AddressDTO addressDTO = new AddressDTO(adresses.id(), adresses.streetAddress(), adresses.zipCode(), adresses.number(), adresses.city(), adresses.state(), adresses.isMain());
             addressDTOListDTOs.add(addressDTO);
         }
 
@@ -87,7 +87,15 @@ public class AdressesServiceImpl implements AddressService {
     }
 
     @Override
-    public void setPrimaryAddressForPerson(Integer addressId) {
+    public void setPrimaryAddressForPerson(Integer personId, Integer addressId) {
+
+        Person person = personRepository.findById(personId).orElseThrow(() -> new RuntimeException("Person not found"));
+        Adresses address = person.getAddresses().stream().filter(a -> a.id().equals(addressId)).findFirst().orElseThrow(() -> new RuntimeException("Address not found"));
+
+        person.getAddresses().forEach(a -> a.setMain(a.id().equals(addressId)));
+        address.setMain(true);
+
+        personRepository.save(person);
 
     }
 
