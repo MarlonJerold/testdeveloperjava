@@ -95,7 +95,6 @@ public class AdressesServiceImpl implements AddressService {
 
         setMainAddressForPerson(person, address);
         personRepository.save(person);
-
     }
 
     private void setMainAddressForPerson(Person person, Adresses address) {

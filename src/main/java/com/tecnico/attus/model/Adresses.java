@@ -1,9 +1,6 @@
 package com.tecnico.attus.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-
 
 @Entity(name = "adresses")
 public class Adresses {
@@ -25,9 +22,20 @@ public class Adresses {
     @JoinColumn(name = "person_id")
     private Person person;
 
-    protected Adresses() {}
+    public Adresses() {}
 
     public Adresses(String streetAddress, String zipCode, Integer number, String city, String state, Person person, boolean isMain) {
+        this.streetAddress = streetAddress;
+        this.zipCode = zipCode;
+        this.number = number;
+        this.city = city;
+        this.state = state;
+        this.person = person;
+        this.isMain = isMain;
+    }
+
+    public Adresses(Integer id , String streetAddress, String zipCode, Integer number, String city, String state, Person person, boolean isMain) {
+        this.id = id;
         this.streetAddress = streetAddress;
         this.zipCode = zipCode;
         this.number = number;
@@ -108,6 +116,7 @@ public class Adresses {
 
     public static class Builder {
 
+        private Integer id;
         private String streetAddress;
         private String zipCode;
         private Integer number;
@@ -115,6 +124,11 @@ public class Adresses {
         private String state;
         private boolean isMain;
         private Person person;
+
+        public Builder id(Integer id) {
+            this.id = id;
+            return this;
+        }
 
         public Builder streetAddress(String streetAddress) {
             this.streetAddress = streetAddress;
@@ -152,7 +166,7 @@ public class Adresses {
         }
 
         public Adresses build() {
-            return new Adresses(streetAddress, zipCode, number, city, state, person, isMain);
+            return new Adresses(id, streetAddress, zipCode, number, city, state, person, isMain);
         }
     }
 

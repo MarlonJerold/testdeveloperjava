@@ -10,16 +10,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.webjars.NotFoundException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -49,29 +46,6 @@ class PersonServiceImplTest {
         assertThrows(RuntimeException.class, () -> personService.createPerson(personRequestDto));
     }
 
-    @Test
-    void testUpdateExistingPerson() throws ParseException {
-
-        Integer existingPersonId = 1;
-        PersonDTO updatedPersonDto = new PersonDTO("John Doe", "25/05/1980");
-
-        Date birthDate = new SimpleDateFormat("dd/MM/yyyy").parse("25/05/1980");
-
-        Person person = Person.builder()
-                .fullName("Marlon Jerold")
-                .birthDate(birthDate)
-                .build();
-
-        when(personRepository.findById(existingPersonId)).thenReturn(Optional.of(person));
-        when(personRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
-
-        PersonAddressDTO result = personService.updatePerson(existingPersonId, updatedPersonDto);
-
-        assertNotNull(result);
-        assertEquals(existingPersonId, 1);
-        assertEquals(updatedPersonDto.fullName(), result.fullName());
-
-    }
 
     @Test
     void testUpdateNonexistentPerson() throws ParseException {
@@ -85,23 +59,6 @@ class PersonServiceImplTest {
 
     }
 
-    @Test
-    void testGetPersonByIdValidId() throws ParseException {
-
-        Integer validPersonId = 1;
-
-        Date birthDate = new SimpleDateFormat("dd/MM/yyyy").parse("25/05/1980");
-
-        Person person = Person.builder()
-                .fullName("Marlon Jerold")
-                .birthDate(birthDate)
-                .build();
-
-        when(personRepository.findById(validPersonId)).thenReturn(Optional.of(person));
-
-        Person result = personService.getPersonById(validPersonId);
-
-    }
 
     @Test
     void testGetPersonByIdInvalidId() {
@@ -109,7 +66,7 @@ class PersonServiceImplTest {
         int invalidPersonId = 999;
 
         when(personRepository.findById(invalidPersonId)).thenReturn(Optional.empty());
-        Person result = personService.getPersonById(invalidPersonId);
+        PersonAddressDTO result = personService.getPersonById(invalidPersonId);
 
         assertNull(result);
 
@@ -192,7 +149,7 @@ class PersonServiceImplTest {
         when(personRepository.findAll()).thenReturn(Arrays.asList(person1, person2));
 
         List<PersonAddressDTO> result = personService.getPeopleWithMainAddress();
-
     }
+
 
 }

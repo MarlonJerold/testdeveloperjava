@@ -21,12 +21,15 @@ import java.util.stream.Collectors;
 @Service
 public class PersonServiceImpl implements PersonService {
 
-    @Autowired
-    private PersonRepository personRepository;
+    private final PersonRepository personRepository;
+
+    private final AddressRepository addressRepository;
 
     @Autowired
-    private AddressRepository addressRepository;
-
+    public PersonServiceImpl(PersonRepository personRepository, AddressRepository addressRepository) {
+        this.personRepository = personRepository;
+        this.addressRepository = addressRepository;
+    }
 
 
     @Override
@@ -89,9 +92,26 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public Person getPersonById(Integer id) {
+    public PersonAddressDTO getPersonById(Integer id) {
         Optional<Person> personById = personRepository.findById(id);
-        return personById.orElse(null);
+
+        PersonAddressDTO personAddressDTO = personById.map(person -> {
+            List<AddressDTO> addressDTOs = person.getAddresses().stream()
+                    .map(address -> new AddressDTO(
+                            address.id(),
+                            address.streetAddress(),
+                            address.zipCode(),
+                            address.id(),
+                            address.city(),
+                            address.state(),
+                            address.isMain()
+                    ))
+                    .collect(Collectors.toList());
+
+            return new PersonAddressDTO(person.getId(), person.getFullName(), person.getBirthDate().toString(), addressDTOs);
+        }).orElse(null);
+
+        return personAddressDTO;
     }
 
     @Override

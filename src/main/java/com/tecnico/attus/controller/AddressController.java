@@ -1,12 +1,9 @@
 package com.tecnico.attus.controller;
 
-import com.tecnico.attus.model.Adresses;
 import com.tecnico.attus.model.dto.AddressDTO;
 import com.tecnico.attus.model.dto.AddressRequestDTO;
 import com.tecnico.attus.services.AddressService;
-import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.support.Repositories;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

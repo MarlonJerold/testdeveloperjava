@@ -9,8 +9,22 @@ public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    public Person(Integer id, String fullName, Date birthDate, Set<Adresses> addresses) {
+        this.id = id;
+        this.fullName = fullName;
+        this.birthDate = birthDate;
+        this.addresses = addresses;
+    }
+
+    public Person() {}
+
     private String fullName;
     private Date birthDate;
+
+    public void setAddresses(Set<Adresses> addresses) {
+        this.addresses = addresses;
+    }
 
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
     private Set<Adresses> addresses = new HashSet<>();

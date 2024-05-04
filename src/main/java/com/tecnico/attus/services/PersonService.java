@@ -11,7 +11,7 @@ public interface PersonService {
 
     PersonAddressDTO createPerson(PersonAddressDTO PersonWithAddressesRequest) throws ParseException;
     PersonAddressDTO updatePerson(Integer id, PersonDTO person) throws ParseException;
-    Person getPersonById(Integer id);
+    PersonAddressDTO getPersonById(Integer id);
     List<PersonAddressDTO> getAllPersons();
     List<PersonAddressDTO> getPeopleWithMainAddress();
 }

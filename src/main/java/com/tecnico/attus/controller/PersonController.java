@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/person")
-@Api(value = "API Person", description = "Teste técnico Java")
+@Api(value = "API Person")
 public class PersonController {
 
     @Autowired
@@ -39,7 +39,7 @@ public class PersonController {
 
     @Operation(summary = "Consultar pessoa por ID", description = "Consulta por ID, será realizado a busca com base no id passado nos parâmetros")
     @GetMapping("/{id}")
-    public ResponseEntity<Person> getPersonById(@PathVariable Integer id) {
+    public ResponseEntity<PersonAddressDTO> getPersonById(@PathVariable Integer id) {
         return ResponseEntity.ok(personService.getPersonById(id));
     }
 

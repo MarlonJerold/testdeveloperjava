@@ -1,6 +1,5 @@
 package com.tecnico.attus.services;
 
-import com.tecnico.attus.model.Adresses;
 import com.tecnico.attus.model.dto.AddressDTO;
 import com.tecnico.attus.model.dto.AddressRequestDTO;
 
