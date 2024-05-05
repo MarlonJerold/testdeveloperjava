@@ -1,5 +1,8 @@
 ##  Início
 
+[Link para a Redação](https://github.com/MarlonJerold/testdeveloperjava/blob/master/redacao_teste_tecnico.md) <br><br>
+[Link para as Respostas do teste](https://github.com/MarlonJerold/testdeveloperjava/blob/master/respostas_teste_tecnico.md)
+
 Para a realização do teste técnico para a vaga, realizei uma API com Java utilizando Springboot, juntamente com JPA e Hibernate, utilizando PostgreSQL, assim como criações de testes unitários utilizando JUnit e Mockito para a simulação dos testes do repository. Também, estou utilizando o jacoco para a metrificação de cobertura.
 
 ```
