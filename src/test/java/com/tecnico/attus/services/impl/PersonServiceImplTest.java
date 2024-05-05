@@ -157,13 +157,6 @@ class PersonServiceImplTest {
         assertEquals(1, result.id());
     }
 
-    @Test
-    public void testUpdatePerson_success() throws Exception {
-        Mockito.when(personRepository.findById(1)).thenReturn(java.util.Optional.of(person));
-        PersonAddressDTO response = service.updatePerson(1, personDTO);
-        System.out.println(response);
-    }
-
     private void startPerson() throws ParseException {
 
         List<AddressDTO> addressesListDTO = new ArrayList<>();

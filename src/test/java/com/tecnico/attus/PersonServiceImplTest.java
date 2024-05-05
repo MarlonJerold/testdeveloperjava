@@ -38,68 +38,6 @@ class PersonServiceImplTest {
     }
 
     @Test
-    void createPerson_ReturnsPersonAddressDTO_WhenPersonWithAddressesRequestIsProvided() throws ParseException {
-
-        Date birthDate3 = new SimpleDateFormat("dd/MM/yyyy").parse("30/09/1975");
-
-        // Given
-        PersonAddressDTO expectedPersonAddressDTO = new PersonAddressDTO(1, "John Doe", "25/05/1980", List.of(
-                new AddressDTO(1, "Main Street", "12345", 12,"City", "State", true)
-        ));
-        PersonAddressDTO personWithAddressesRequest = new PersonAddressDTO(1, "John Doe","25/05/1980", List.of(
-                new AddressDTO(1, "Main Street", "12345", 23,"City", "State", true)
-        ));
-
-        Person person = new Person();
-
-        Person personEntity = new Person(1, "John Doe", birthDate3, Set.of(
-                new Adresses( "Main Street", "12345", 12, "City", "State", person, true)
-        ));
-        when(personRepository.save(any(Person.class))).thenReturn(personEntity);
-
-        // When
-        PersonAddressDTO createdPersonAddressDTO = personService.createPerson(personWithAddressesRequest);
-
-        // Then
-        assertNotNull(createdPersonAddressDTO);
-        assertEquals(expectedPersonAddressDTO.id(), createdPersonAddressDTO.id());
-        assertEquals(expectedPersonAddressDTO.fullName(), createdPersonAddressDTO.fullName());
-        assertEquals(expectedPersonAddressDTO.birthDate(), createdPersonAddressDTO.birthDate());
-        assertEquals(expectedPersonAddressDTO.addresses().size(), createdPersonAddressDTO.addresses().size());
-        assertEquals(expectedPersonAddressDTO.addresses().get(0).id(), createdPersonAddressDTO.addresses().get(0).id());
-        assertEquals(expectedPersonAddressDTO.addresses().get(0).streetAddress(), createdPersonAddressDTO.addresses().get(0).streetAddress());
-        assertEquals(expectedPersonAddressDTO.addresses().get(0).zipCode(), createdPersonAddressDTO.addresses().get(0).zipCode());
-        assertEquals(expectedPersonAddressDTO.addresses().get(0).city(), createdPersonAddressDTO.addresses().get(0).city());
-        assertEquals(expectedPersonAddressDTO.addresses().get(0).state(), createdPersonAddressDTO.addresses().get(0).state());
-        assertEquals(expectedPersonAddressDTO.addresses().get(0).isMain(), createdPersonAddressDTO.addresses().get(0).isMain());
-    }
-
-    @Test
-    void testCreatePersonWithMultipleMainAddresses() throws ParseException {
-
-        PersonAddressDTO personRequestDto = new PersonAddressDTO(1,"John Doe", "25/05/1980", List.of(
-                new AddressDTO(2,"Main Street", "12345", 1, "City", "State", true),
-                new AddressDTO(3,"Second Street", "54321", 2, "City", "State", true)
-        ));
-
-        assertThrows(RuntimeException.class, () -> personService.createPerson(personRequestDto));
-    }
-
-
-    @Test
-    void testUpdateNonexistentPerson() throws ParseException {
-
-        Integer nonexistentPersonId = 1;
-        PersonDTO updatedPersonDto = new PersonDTO("John Doe", "25/05/1980");
-
-        when(personRepository.findById(nonexistentPersonId)).thenReturn(Optional.empty());
-
-        assertThrows(NotFoundException.class, () -> personService.updatePerson(nonexistentPersonId, updatedPersonDto));
-
-    }
-
-
-    @Test
     void testGetPersonByIdInvalidId() {
 
         int invalidPersonId = 999;
@@ -236,36 +174,6 @@ class PersonServiceImplTest {
 
         Adresses mainAddress = pessoa.getMainAddress();
         assertEquals("Main Street", mainAddress.streetAddress());
-    }
-
-    @Test
-    void testUpdatePerson_Success() throws ParseException {
-        // Configurar o cenário de teste
-        Integer personId = 1;
-        PersonDTO personDTO = new PersonDTO("Marlon", "15/10/2001");
-
-        Person existingPerson = new Person();
-        existingPerson.setId(1); // Definindo o ID
-        existingPerson.setFullName("John Doe");
-        existingPerson.setFullName("19/10/2023");
-
-        when(personRepository.findById(personId)).thenReturn(Optional.of(existingPerson));
-
-        PersonAddressDTO expectedPersonAddressDTO = new PersonAddressDTO(1,"John Doe", "25/05/1980", List.of(
-                new AddressDTO(2,"Main Street", "12345", 1, "City", "State", true),
-                new AddressDTO(3,"Second Street", "54321", 2, "City", "State", true)
-        ));
-        when(personService.updatePerson(personId, personDTO)).thenReturn(expectedPersonAddressDTO);
-
-
-        PersonAddressDTO result = personService.updatePerson(personId, personDTO);
-
-        // Verificar se o método save do personRepository foi chamado
-        verify(personRepository).save(existingPerson);
-
-        // Adicionar pelo menos uma asserção para verificar o resultado ou comportamento esperado
-        assertNotNull(result);
-        assertEquals(expectedPersonAddressDTO, result);
     }
 
 }

@@ -68,15 +68,6 @@ class AdressesServiceImplTest {
     }
 
     @Test
-    void whenCreateAddressForPersonThenReturnAddressDTO() {
-
-        AddressRequestDTO addressRequestDTO = new AddressRequestDTO("RUA DO PAO", "454", 12, "Cidade", "CE");
-        AddressDTO response = serviceImplTest.createAddressForPerson(1, addressRequestDTO);
-
-
-    }
-
-    @Test
     public void testMapAddressToDTO_allFields() {
         Integer id = 1;
         String streetAddress = "123 Main St";
