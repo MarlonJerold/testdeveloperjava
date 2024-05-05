@@ -3,7 +3,6 @@ package com.tecnico.attus.controller;
 import com.tecnico.attus.model.dto.AddressDTO;
 import com.tecnico.attus.model.dto.AddressRequestDTO;
 import com.tecnico.attus.services.AddressService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,8 +12,12 @@ import java.util.List;
 @RequestMapping("/address")
 public class AddressController {
 
-    @Autowired
-    private AddressService addressService;
+
+    private final AddressService addressService;
+
+    public AddressController(AddressService addressService1) {
+        this.addressService = addressService1;
+    }
 
     @GetMapping("/{personId}")
     public ResponseEntity<List<AddressDTO>> getAllAddressForPerson(@PathVariable Integer personId) {

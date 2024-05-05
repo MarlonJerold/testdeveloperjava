@@ -34,17 +34,6 @@ public class Adresses {
         this.isMain = isMain;
     }
 
-    public Adresses(Integer id , String streetAddress, String zipCode, Integer number, String city, String state, Person person, boolean isMain) {
-        this.id = id;
-        this.streetAddress = streetAddress;
-        this.zipCode = zipCode;
-        this.number = number;
-        this.city = city;
-        this.state = state;
-        this.person = person;
-        this.isMain = isMain;
-    }
-
     public Integer id() {
         return id;
     }
@@ -116,7 +105,6 @@ public class Adresses {
 
     public static class Builder {
 
-        private Integer id;
         private String streetAddress;
         private String zipCode;
         private Integer number;
@@ -124,11 +112,6 @@ public class Adresses {
         private String state;
         private boolean isMain;
         private Person person;
-
-        public Builder id(Integer id) {
-            this.id = id;
-            return this;
-        }
 
         public Builder streetAddress(String streetAddress) {
             this.streetAddress = streetAddress;
@@ -166,7 +149,7 @@ public class Adresses {
         }
 
         public Adresses build() {
-            return new Adresses(id, streetAddress, zipCode, number, city, state, person, isMain);
+            return new Adresses(streetAddress, zipCode, number, city, state, person, isMain);
         }
     }
 

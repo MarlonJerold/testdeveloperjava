@@ -14,7 +14,6 @@ import org.webjars.NotFoundException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -42,7 +41,6 @@ public class PersonServiceImpl implements PersonService {
                 .fullName(personRequestDto.fullName())
                 .birthDate(dataFormatada)
                 .build();
-
         List<AddressDTO> addressDtos = personRequestDto.addresses();
 
         long mainAddressCount = addressDtos.stream().filter(AddressDTO::isMain).count();
@@ -51,17 +49,7 @@ public class PersonServiceImpl implements PersonService {
             throw new RuntimeException("More than one address is marked as main");
         }
 
-        List<Adresses> addresses = personRequestDto.addresses().stream()
-                .map(addressDto -> new Adresses(
-                        addressDto.streetAddress(),
-                        addressDto.zipCode(),
-                        addressDto.number(),
-                        addressDto.city(),
-                        addressDto.state(),
-                        person,
-                        addressDto.isMain()
-                ))
-                .collect(Collectors.toList());
+        List<Adresses> addresses = mapToAdressesList(personRequestDto.addresses(), person);
 
         person.getAddresses().addAll(addresses);
 
@@ -71,6 +59,7 @@ public class PersonServiceImpl implements PersonService {
         return personRequestDto;
 
     }
+
 
     @Override
     public PersonAddressDTO updatePerson(Integer id, PersonDTO person) throws ParseException {
@@ -93,25 +82,23 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public PersonAddressDTO getPersonById(Integer id) {
-        Optional<Person> personById = personRepository.findById(id);
 
-        PersonAddressDTO personAddressDTO = personById.map(person -> {
-            List<AddressDTO> addressDTOs = person.getAddresses().stream()
-                    .map(address -> new AddressDTO(
-                            address.id(),
-                            address.streetAddress(),
-                            address.zipCode(),
-                            address.id(),
-                            address.city(),
-                            address.state(),
-                            address.isMain()
-                    ))
-                    .collect(Collectors.toList());
-
-            return new PersonAddressDTO(person.getId(), person.getFullName(), person.getBirthDate().toString(), addressDTOs);
-        }).orElse(null);
-
-        return personAddressDTO;
+        return personRepository.findById(id)
+                .map(person -> {
+                    List<AddressDTO> addressDTOs = person.getAddresses().stream()
+                            .map(address -> new AddressDTO(
+                                    address.id(),
+                                    address.streetAddress(),
+                                    address.zipCode(),
+                                    address.id(),
+                                    address.city(),
+                                    address.state(),
+                                    address.isMain()
+                            ))
+                            .toList();
+                    return new PersonAddressDTO(person.getId(), person.getFullName(),  person.getBirthDate() != null ? person.getBirthDate().toString() : "Unknown", addressDTOs);
+                })
+                .orElse(null);
     }
 
     @Override
@@ -122,35 +109,44 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public List<PersonAddressDTO> getPeopleWithMainAddress() {
-        List<Person> personList = personRepository.findAll();
-
-        List<PersonAddressDTO> dtoList = personList.stream()
-                .map(person -> {
-                    Adresses mainAddress = person.getAddresses().stream()
-                            .filter(Adresses::isMain)
-                            .findFirst()
-                            .orElse(null);
-
-                    if (mainAddress != null) {
-                        LocalDateTime birthDate = LocalDateTime.parse(person.getBirthDate().toString());
-                        AddressDTO addressDTO = new AddressDTO(
-                                mainAddress.id(),
-                                mainAddress.streetAddress(),
-                                mainAddress.zipCode(),
-                                mainAddress.number(),
-                                mainAddress.city(),
-                                mainAddress.state(),
-                                mainAddress.isMain()
-                        );
-                        return new PersonAddressDTO(person.getId(), person.getFullName(), birthDate.toString(), Collections.singletonList(addressDTO)
-                        );
-                    } else {
-                        return null;
-                    }
-                })
+        return personRepository.findAll().stream()
+                .map(this::mapPersonToPersonAddressDTO)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
-        return dtoList;
+    }
+
+    PersonAddressDTO mapPersonToPersonAddressDTO(Person person) {
+        Adresses mainAddress = findMainAddress(person);
+        if (mainAddress != null) {
+            AddressDTO addressDTO = mapAddressToAddressDTO(mainAddress);
+            return new PersonAddressDTO(
+                    person.getId(),
+                    person.getFullName(),
+                    person.getBirthDate().toString(),
+                    Collections.singletonList(addressDTO)
+            );
+        } else {
+            return null;
+        }
+    }
+
+    private Adresses findMainAddress(Person person) {
+        return person.getAddresses().stream()
+                .filter(Adresses::isMain)
+                .findFirst()
+                .orElse(null);
+    }
+
+    private AddressDTO mapAddressToAddressDTO(Adresses address) {
+        return new AddressDTO(
+                address.id(),
+                address.streetAddress(),
+                address.zipCode(),
+                address.number(),
+                address.city(),
+                address.state(),
+                address.isMain()
+        );
     }
     public List<PersonAddressDTO> mapToDTOList(List<Person> personList) {
         return personList.stream()
@@ -167,4 +163,17 @@ public class PersonServiceImpl implements PersonService {
         );
     }
 
+    private List<Adresses> mapToAdressesList(List<AddressDTO> addressDTOList, Person person) {
+        return addressDTOList.stream()
+                .map(addressDto -> new Adresses(
+                        addressDto.streetAddress(),
+                        addressDto.zipCode(),
+                        addressDto.number(),
+                        addressDto.city(),
+                        addressDto.state(),
+                        person,
+                        addressDto.isMain()
+                ))
+                .collect(Collectors.toList());
+    }
 }

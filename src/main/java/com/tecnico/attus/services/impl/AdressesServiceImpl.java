@@ -97,13 +97,13 @@ public class AdressesServiceImpl implements AddressService {
         personRepository.save(person);
     }
 
-    private void setMainAddressForPerson(Person person, Adresses address) {
+    public void setMainAddressForPerson(Person person, Adresses address) {
         person.getAddresses().forEach(a -> a.setMain(a.id().equals(address.id())));
         address.setMain(true);
     }
 
 
-    private AddressDTO mapAddressToDTO(Adresses adresses) {
+    public AddressDTO mapAddressToDTO(Adresses adresses) {
         return new AddressDTO(
                 adresses.id(),
                 adresses.streetAddress(),

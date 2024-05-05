@@ -1,12 +1,10 @@
 package com.tecnico.attus.controller;
 
-import com.tecnico.attus.model.Person;
 import com.tecnico.attus.model.dto.PersonAddressDTO;
 import com.tecnico.attus.model.dto.PersonDTO;
 import com.tecnico.attus.services.PersonService;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,8 +16,12 @@ import java.util.List;
 @Api(value = "API Person")
 public class PersonController {
 
-    @Autowired
-    private PersonService personService;
+
+    private final PersonService personService;
+
+    public PersonController(PersonService personService) {
+        this.personService = personService;
+    }
 
     @PostMapping
     public ResponseEntity<PersonAddressDTO> createPerson(@RequestBody PersonAddressDTO requestDTO) throws ParseException {

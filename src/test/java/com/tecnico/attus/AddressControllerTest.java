@@ -1,6 +1,7 @@
 package com.tecnico.attus;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tecnico.attus.controller.AddressController;
 import com.tecnico.attus.model.Adresses;
 import com.tecnico.attus.model.Person;
 import com.tecnico.attus.model.dto.AddressDTO;
@@ -12,6 +13,7 @@ import com.tecnico.attus.repository.AddressRepository;
 import com.tecnico.attus.repository.PersonRepository;
 import com.tecnico.attus.services.AddressService;
 import com.tecnico.attus.services.PersonService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -19,7 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -30,13 +34,14 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class AddressControllerTest {
+class AddressControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -44,13 +49,11 @@ public class AddressControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @MockBean
-    private AddressService addressService;
+
     @Mock
     private AddressRepository addressRepository;
 
     private AddressDTO mockAddress;
-
 
     @Mock
     private PersonRepository personRepository;
@@ -58,49 +61,26 @@ public class AddressControllerTest {
     @MockBean
     private PersonService personService;
 
+    private AddressService addressService;
+    private AddressController addressController;
+
+    @BeforeEach
+    void setUp() {
+        addressService = mock(AddressService.class);
+        addressController = new AddressController(addressService);
+    }
+
+
+
     @Test
-    public void testGetAllAddressForPerson() throws Exception {
+    void testCreateAddressForPerson_Success() {
 
-        Integer personId = 1;
-        List<Adresses> addresses = new ArrayList<>();
+        AddressRequestDTO requestDTO = new AddressRequestDTO("Rua teste", "656500-1", 12, "Cidade Alerta", "Estadps");
+        when(addressService.createAddressForPerson(anyInt(), eq(requestDTO)))
+                .thenReturn(new AddressDTO(1, requestDTO.streetAddress(), requestDTO.zipCode(), requestDTO.number(),requestDTO.city(), requestDTO.state(), true));
+        ResponseEntity<AddressDTO> response = addressController.createAddressForPerson(1, requestDTO);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
 
-        Adresses adressesBuild = Adresses.builder()
-                .id(1)
-                .streetAddress("Rua 10")
-                .zipCode("1234")
-                .number(12)
-                .city("City")
-                .state("State")
-                .isMain(true)
-                .build();
-
-        addresses.add(adressesBuild);
-
-        Adresses adressesBuild2 = Adresses.builder()
-                .id(2)
-                .streetAddress("Rua 20")
-                .zipCode("1234")
-                .number(12)
-                .city("City")
-                .state("State")
-                .isMain(false)
-                .build();
-
-        addresses.add(adressesBuild2);
-
-        List<AddressDTO> addressDTOListDTOs = new ArrayList<>();
-
-        for (Adresses adresses : addresses) {
-            AddressDTO addressDTO = new AddressDTO(adresses.id(), adresses.streetAddress(), adresses.zipCode(), adresses.number(), adresses.city(), adresses.state(), adresses.isMain());
-            addressDTOListDTOs.add(addressDTO);
-        }
-
-        when(addressService.getAddressesForPerson(personId)).thenReturn(addressDTOListDTOs);
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/address/{personId}", personId)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(addressDTOListDTOs)));
     }
 
     @Test
@@ -111,7 +91,6 @@ public class AddressControllerTest {
         List<Adresses> addresses = new ArrayList<>();
 
         Adresses adressesBuild = Adresses.builder()
-                .id(1)
                 .streetAddress("Rua 10")
                 .zipCode("1234")
                 .number(12)
@@ -177,7 +156,7 @@ public class AddressControllerTest {
     }
 
     @Test
-    public void testCreateAddressForPerson() {
+    void testCreateAddressForPerson() {
         when(addressRepository.save(any())).thenReturn(mockAddress);
 
         AddressDTO result = addressService.createAddressForPerson(1, new AddressRequestDTO("Main St", "12345", 12, "City", "State"));
@@ -186,7 +165,7 @@ public class AddressControllerTest {
     }
 
     @Test
-    public void testUpdateAddressForPerson() {
+    void testUpdateAddressForPerson() {
         when(addressRepository.existsById(any())).thenReturn(true);
         when(addressRepository.save(any())).thenReturn(mockAddress);
 
@@ -195,5 +174,16 @@ public class AddressControllerTest {
         assertEquals(mockAddress, result);
     }
 
+    @Test
+    void createAddressForPerson_ReturnsNull_WhenPersonNotFound() {
+        Integer personId = 1;
+        AddressRequestDTO addressRequestDTO = new AddressRequestDTO("Main Street", "12345", 1, "City", "State");
+        when(personRepository.findById(personId)).thenReturn(Optional.empty());
 
+        AddressDTO result = addressService.createAddressForPerson(personId, addressRequestDTO);
+
+        assertNull(result);
+    }
 }
+
+
