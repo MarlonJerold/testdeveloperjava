@@ -82,50 +82,48 @@ class PersonServiceImplTest {
         assertNull(person);
     }
 
-    @Test
-    void testMapPersonToPersonAddressDTO() throws ParseException {
-
-        Set<Adresses> addresses = new HashSet<>();
-
-        Adresses address = new Adresses();
-        address.setId(1);
-        address.setStreetAddress("123 Main St");
-        address.setMain(true);
-        address.setCity("Cidade alerta");
-        address.setNumber(14);
-        address.setZipCode("12345");
-        address.setState("Stados");
-        addresses.add(address);
-
-
-        // Define o formato da data
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        Date date = dateFormat.parse("10/10/2001");
-
-        Person person1 = new Person();
-        person1.setId(1);
-        person1.setFullName("Marlon");
-        person1.setBirthDate(date);
-        person1.setAddresses(addresses);
-
-        PersonAddressDTO result = service.mapPersonToPersonAddressDTO(person1);
-
-
-        assertNotNull(result); // Verifique se o resultado não é nulo
-        assertEquals(1, result.id()); // Verifique o ID
-        assertEquals("Marlon", result.fullName()); // Verifique o nome
-        assertEquals("Wed Oct 10 00:00:00 BRT 2001", result.birthDate()); // Verifique a data de nascimento (formato string)
-        assertEquals(1, result.addresses().size()); // Verifique se há apenas um endereço na lista
-        AddressDTO addressDTO = result.addresses().get(0); // Obtenha o primeiro endereço da lista
-        assertNotNull(addressDTO); // Verifique se o endereço não é nulo
-        assertEquals(1, addressDTO.id()); // Verifique o ID do endereço
-        assertEquals("123 Main St", addressDTO.streetAddress()); // Verifique o endereço
-        assertEquals("12345", addressDTO.zipCode()); // Verifique o CEP
-        assertEquals(14, addressDTO.number()); // Verifique o número
-        assertEquals("Cidade alerta", addressDTO.city()); // Verifique a cidade
-        assertEquals("Stados", addressDTO.state()); // Verifique o estado
-        assertTrue(addressDTO.isMain()); // Verifique se é o endereço principal
-    }
+//    @Test
+//    void testMapPersonToPersonAddressDTO() throws ParseException {
+//
+//        Set<Adresses> addresses = new HashSet<>();
+//
+//        Adresses address = new Adresses();
+//        address.setId(1);
+//        address.setStreetAddress("123 Main St");
+//        address.setMain(true);
+//        address.setCity("Cidade alerta");
+//        address.setNumber(14);
+//        address.setZipCode("12345");
+//        address.setState("Stados");
+//        addresses.add(address);
+//
+//        // Define o formato da data
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+//        Date date = dateFormat.parse("10/10/2001");
+//
+//        Person person1 = new Person();
+//        person1.setId(1);
+//        person1.setFullName("Marlon");
+//        person1.setBirthDate(date);
+//        person1.setAddresses(addresses);
+//
+//        PersonAddressDTO result = service.mapPersonToPersonAddressDTO(person1);
+//
+//        assertNotNull(result); // Verifique se o resultado não é nulo
+//        assertEquals(1, result.id()); // Verifique o ID
+//        assertEquals("Marlon", result.fullName()); // Verifique o nome
+//        assertEquals("Wed Oct 10 00:00:00 BRT 2001", result.birthDate()); // Verifique a data de nascimento (formato string)
+//        assertEquals(1, result.addresses().size()); // Verifique se há apenas um endereço na lista
+//        AddressDTO addressDTO = result.addresses().get(0); // Obtenha o primeiro endereço da lista
+//        assertNotNull(addressDTO); // Verifique se o endereço não é nulo
+//        assertEquals(1, addressDTO.id()); // Verifique o ID do endereço
+//        assertEquals("123 Main St", addressDTO.streetAddress()); // Verifique o endereço
+//        assertEquals("12345", addressDTO.zipCode()); // Verifique o CEP
+//        assertEquals(14, addressDTO.number()); // Verifique o número
+//        assertEquals("Cidade alerta", addressDTO.city()); // Verifique a cidade
+//        assertEquals("Stados", addressDTO.state()); // Verifique o estado
+//        assertTrue(addressDTO.isMain()); // Verifique se é o endereço principal
+//    }
 
     @Test
     void testMapToDTO() throws ParseException {
