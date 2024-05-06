@@ -1,3 +1,7 @@
+O teste está rodando nesse link
+
+https://testdeveloperjava-deploy.onrender.com/swagger-ui/index.html
+
 ##  Início
 
 [Link para a Redação](https://github.com/MarlonJerold/testdeveloperjava/blob/master/redacao_teste_tecnico.md) <br><br>
